@@ -1,97 +1,141 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Task Manager App
 
-# Getting Started
+Repository: <ADD_YOUR_GITHUB_REPO_URL_HERE>
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+This repository contains a React Native frontend (in `src/`) and a simple PHP backend API (can be served from XAMPP or copied into the project `backend/` directory).
 
-## Step 1: Start Metro
+---
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## What to submit
+- GitHub repository link (replace the `Repository` line above).
+- This `README.md` with setup instructions, API endpoints, and database schema.
+- `database.sql` (provided in project root).
+- Postman collection included at `backend/postman_collection.json`.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+---
 
-```sh
-# Using npm
+## Quick Setup (frontend)
+
+Prerequisites
+- Node.js (14+ recommended)
+- npm or yarn
+- React Native CLI
+- Android Studio (for Android) or Xcode (for iOS)
+
+Install and run
+```bash
+# from project root
+npm install
 npm start
-
-# OR using Yarn
-yarn start
+# open another terminal to run on emulator/device
+npm run android   # or npm run ios
 ```
 
-## Step 2: Build and run your app
+---
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## Backend (PHP) — two options
 
-### Android
+Option A — Use XAMPP (recommended)
+1. Ensure XAMPP Apache + MySQL running.
+2. Your backend files are already at: `C:\xampp\htdocs\task_manager`.
+3. API entry: `http://localhost/task_manager/index.php` (host), emulator: `http://10.0.2.2/task_manager/index.php`.
 
-```sh
-# Using npm
-npm run android
+Option B — Serve from project
+1. Copy backend files into project: `TaskManagerApp/backend/`.
+2. From project root run:
+```bash
+php -S 0.0.0.0:8080 -t backend
+```
+3. Example entry: `http://10.0.2.2:8080/task_manager/index.php` (adjust if `index.php` location differs).
 
-# OR using Yarn
-yarn android
+---
+
+## Import Database (MySQL)
+
+From project root (or wherever `database.sql` is):
+```bash
+mysql -u root -p < database.sql
 ```
 
-### iOS
+`database.sql` creates the `task_manager` DB and the `users` and `tasks` tables.
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+---
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+## API Endpoints
 
-```sh
-bundle install
+Base: (depends on how you serve backend)
+- XAMPP (browser): `http://localhost/task_manager/index.php`
+- Emulator (XAMPP): `http://10.0.2.2/task_manager/index.php`
+- Built-in server: `http://10.0.2.2:8080/task_manager/index.php` or `http://10.0.2.2:8080/index.php`
+
+Authentication
+- POST `/auth/register` — body: `{ "name": "...", "email": "...", "password": "..." }`
+- POST `/auth/login` — body: `{ "email": "...", "password": "..." }` => returns `{ token, user }`
+- POST `/auth/logout` — no body (stub)
+
+Tasks
+- GET `/tasks?user_id={id}` — returns `{ data: [ ...tasks ] }`
+- POST `/tasks` — body: `{ "user_id":..., "title":"...", "description":"...", "status":"..." }`
+- PUT `/tasks/{id}` — body: `{ "title":"...", "description":"...", "status":"..." }`
+- DELETE `/tasks/{id}` — delete
+
+Headers: include `Authorization: Bearer {token}` (frontend currently reads token and sets header in sagas)
+
+cURL examples
+```bash
+# Login
+curl -X POST -H "Content-Type: application/json" -d '{"email":"john@example.com","password":"pass"}' http://10.0.2.2/task_manager/index.php/auth/login
+
+# Fetch tasks
+curl "http://10.0.2.2/task_manager/index.php/tasks?user_id=1" -H "Authorization: Bearer TOKEN"
 ```
 
-Then, and every time you update your native dependencies, run:
+---
 
-```sh
-bundle exec pod install
+## Database schema (MySQL)
+
+Users
+```sql
+CREATE TABLE users (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+Tasks
+```sql
+CREATE TABLE tasks (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  title VARCHAR(200) NOT NULL,
+  description TEXT,
+  status ENUM('pending','in_progress','Completed') DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+`database.sql` file (already present) contains these statements.
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+---
 
-## Step 3: Modify your app
+## Postman collection
 
-Now that you have successfully run the app, let's make changes!
+A simple Postman collection is included at `backend/postman_collection.json` with requests for register, login, fetch tasks, create task, update task, delete task.
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+---
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+## Notes & Troubleshooting
+- If emulator can't reach `localhost`, use `10.0.2.2` for Android emulator.
+- Ensure `BASE_URL` values in `src/redux/sagas/authSaga.js` and `src/redux/sagas/taskSaga.js` match the backend URL used.
+- If you see CORS issues when serving from a different host/port, enable CORS or use the backend `index.php` to set `Access-Control-Allow-Origin: *` (development only).
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+---
 
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## License
+MIT
