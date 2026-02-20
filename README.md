@@ -5,7 +5,6 @@ This repository contains a React Native frontend (in `src/`) and a simple PHP ba
 ---
 
 ## What to submit
-- GitHub repository link (replace the `Repository` line above).
 - This `README.md` with setup instructions, API endpoints, and database schema.
 - `database.sql` (provided in project root).
 - Postman collection included at `backend/postman_collection.json`.
