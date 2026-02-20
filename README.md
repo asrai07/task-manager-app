@@ -1,7 +1,5 @@
 # Task Manager App
 
-Repository: <ADD_YOUR_GITHUB_REPO_URL_HERE>
-
 This repository contains a React Native frontend (in `src/`) and a simple PHP backend API (can be served from XAMPP or copied into the project `backend/` directory).
 
 ---
