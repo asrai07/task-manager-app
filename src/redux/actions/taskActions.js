@@ -10,6 +10,10 @@ export const UPDATE_TASK_REQUEST = "UPDATE_TASK_REQUEST";
 export const UPDATE_TASK_SUCCESS = "UPDATE_TASK_SUCCESS";
 export const UPDATE_TASK_FAILURE = "UPDATE_TASK_FAILURE";
 
+export const DELETE_TASK_REQUEST = "DELETE_TASK_REQUEST";
+export const DELETE_TASK_SUCCESS = "DELETE_TASK_SUCCESS";
+export const DELETE_TASK_FAILURE = "DELETE_TASK_FAILURE";
+
 export const createTaskRequest = (data) => ({
   type: CREATE_TASK_REQUEST,
   payload: data,
@@ -18,6 +22,11 @@ export const createTaskRequest = (data) => ({
 export const updateTaskRequest = (id, data) => ({
   type: UPDATE_TASK_REQUEST,
   payload: { id, data },
+});
+
+export const deleteTaskRequest = (id, userId) => ({
+  type: DELETE_TASK_REQUEST,
+  payload: { id, userId },
 });
 
 

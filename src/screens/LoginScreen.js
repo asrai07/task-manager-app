@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
-  ActivityIndicator,
   Alert
 } from 'react-native';
 import { useDispatch, useSelector } from "react-redux";
 import { loginRequest } from "../redux/actions/authActions";
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 
 const LoginScreen = ({ navigation }) => {
@@ -49,18 +49,15 @@ const handleLogin = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
 
-      <TextInput
+      <Input
         placeholder="Email"
-        placeholderTextColor="#888"
         value={email}
         onChangeText={setEmail}
-        style={styles.input}
       />
 
       <View style={styles.passwordRow}>
-        <TextInput
+        <Input
           placeholder="Password"
-          placeholderTextColor="#888"
           value={password}
           onChangeText={setPassword}
           secureTextEntry={!showPassword}
@@ -74,13 +71,7 @@ const handleLogin = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}>
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>Login</Text>
-        )}
-      </TouchableOpacity>
+      <Button title="Login" onPress={handleLogin} loading={loading} />
 
       <TouchableOpacity
         style={styles.link}
@@ -110,14 +101,6 @@ const styles = StyleSheet.create({
     color: '#333',
     fontWeight: 'bold',
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
-    marginBottom: 15,
-    padding: 12,
-    borderRadius: 5,
-  },
   passwordRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -130,6 +113,7 @@ const styles = StyleSheet.create({
   inputInline: {
     flex: 1,
     padding: 10,
+    marginBottom: 0,
   },
   toggleButton: {
     paddingHorizontal: 12,
@@ -137,18 +121,6 @@ const styles = StyleSheet.create({
   },
   toggleText: {
     color: '#007AFF',
-    fontWeight: '600',
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 14,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
     fontWeight: '600',
   },
   link: {

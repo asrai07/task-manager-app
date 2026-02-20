@@ -28,7 +28,7 @@
       "name": "Fetch Tasks",
       "request": {
         "method": "GET",
-        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "header": [{ "key": "Authorization", "value": "{{token}}" }],
         "url": { "raw": "{{baseUrl}}/tasks?user_id=1", "host": ["{{baseUrl}}"], "path": ["tasks"], "query": [{ "key": "user_id", "value": "1" }] }
       }
     },
@@ -36,7 +36,7 @@
       "name": "Create Task",
       "request": {
         "method": "POST",
-        "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+        "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "{{token}}" }],
         "body": { "mode": "raw", "raw": "{ \"user_id\":1, \"title\": \"New Task\", \"description\": \"Details\", \"status\": \"pending\" }" },
         "url": { "raw": "{{baseUrl}}/tasks", "host": ["{{baseUrl}}"], "path": ["tasks"] }
       }
@@ -45,8 +45,16 @@
       "name": "Update Task",
       "request": {
         "method": "PUT",
-        "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+        "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "{{token}}" }],
         "body": { "mode": "raw", "raw": "{ \"title\": \"Updated\", \"description\": \"Updated\", \"status\": \"Completed\" }" },
+        "url": { "raw": "{{baseUrl}}/tasks/1", "host": ["{{baseUrl}}"], "path": ["tasks","1"] }
+      }
+    },
+    {
+      "name": "Delete Task",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "{{token}}" }],
         "url": { "raw": "{{baseUrl}}/tasks/1", "host": ["{{baseUrl}}"], "path": ["tasks","1"] }
       }
     }

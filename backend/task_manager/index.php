@@ -1,7 +1,7 @@
 <?php
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 require_once "config/db.php";
@@ -40,6 +40,18 @@ function getTokenFromHeader() {
     }
 
     return null;
+}
+
+function validateToken($token, $conn) {
+    if (!$token) {
+        return null;
+    }
+
+    $stmt = $conn->prepare("SELECT user_id FROM tokens WHERE token = ? AND expires_at > NOW()");
+    $stmt->execute([$token]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $result ? $result['user_id'] : null;
 }
 
 
@@ -96,8 +108,17 @@ if ($endpoint === "login" && $request_method === "POST") {
         sendResponse(false, ["error" => "Invalid password"], 401);
     }
 
-    // Generate simple token
+    // Generate token and store in database
     $token = bin2hex(random_bytes(32));
+    $expiresAt = date('Y-m-d H:i:s', strtotime('+7 days'));
+
+    // Delete old tokens for this user
+    $stmt = $conn->prepare("DELETE FROM tokens WHERE user_id = ?");
+    $stmt->execute([$user['id']]);
+
+    // Insert new token
+    $stmt = $conn->prepare("INSERT INTO tokens (user_id, token, expires_at) VALUES (?, ?, ?)");
+    $stmt->execute([$user['id'], $token, $expiresAt]);
 
     sendResponse(true, [
         "message" => "Login successful",
@@ -114,8 +135,9 @@ if ($endpoint === "login" && $request_method === "POST") {
 if ($endpoint === "tasks") {
 
     $token = getTokenFromHeader();
+    $userId = validateToken($token, $conn);
 
-    if (!$token) {
+    if (!$userId) {
         sendResponse(false, ["error" => "Unauthorized"], 401);
     }
 
@@ -174,6 +196,13 @@ if ($endpoint === "tasks") {
 
     sendResponse(true, ["message" => "Task updated"]);
 }
+
+    /* ===== DELETE TASK ===== */
+    if ($request_method === "DELETE" && $id) {
+        $stmt = $conn->prepare("DELETE FROM tasks WHERE id = ?");
+        $stmt->execute([$id]);
+        sendResponse(true, ["message" => "Task deleted"]);
+    }
 
 }
 

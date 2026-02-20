@@ -31,6 +31,19 @@ CREATE TABLE IF NOT EXISTS tasks (
 CREATE INDEX idx_tasks_user_id ON tasks(user_id);
 CREATE INDEX idx_users_email ON users(email);
 
+-- Create Tokens Table
+CREATE TABLE IF NOT EXISTS tokens (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  token VARCHAR(64) UNIQUE NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE INDEX idx_tokens_token ON tokens(token);
+CREATE INDEX idx_tokens_user_id ON tokens(user_id);
+
 -- Sample Data (Optional)
 -- INSERT INTO users (name, email, password) VALUES
 -- ('John Doe', 'john@example.com', 'hashed_password_here'),

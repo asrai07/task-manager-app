@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import {
   View,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   Alert,
-  ActivityIndicator,
   Text,
   ScrollView,
 } from "react-native";
@@ -14,6 +12,8 @@ import {
   createTaskRequest,
   updateTaskRequest,
 } from "../redux/actions/taskActions";
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 const AddEditTaskScreen = ({ route, navigation }) => {
   const task = route.params?.task;
@@ -53,21 +53,17 @@ const AddEditTaskScreen = ({ route, navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.label}>Title *</Text>
-      <TextInput
+      <Input
         placeholder="Enter task title"
-        placeholderTextColor="#aaa"
         value={title}
         onChangeText={setTitle}
-        style={styles.input}
       />
 
       <Text style={styles.label}>Description</Text>
-      <TextInput
+      <Input
         placeholder="Enter task description"
-        placeholderTextColor="#aaa"
         value={description}
         onChangeText={setDescription}
-        style={[styles.input, styles.textArea]}
         multiline
         numberOfLines={4}
       />
@@ -95,15 +91,12 @@ const AddEditTaskScreen = ({ route, navigation }) => {
         ))}
       </View>
 
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} disabled={loading}>
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.submitButtonText}>
-            {task ? "Update Task" : "Create Task"}
-          </Text>
-        )}
-      </TouchableOpacity>
+      <Button
+        title={task ? "Update Task" : "Create Task"}
+        onPress={handleSubmit}
+        loading={loading}
+        style={styles.submitButton}
+      />
     </ScrollView>
   );
 };
@@ -122,19 +115,6 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 8,
     marginTop: 12,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
-    padding: 12,
-    marginBottom: 15,
-    borderRadius: 5,
-    fontSize: 14,
-  },
-  textArea: {
-    textAlignVertical: 'top',
-    minHeight: 100,
   },
   statusContainer: {
     flexDirection: 'row',
@@ -164,16 +144,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   submitButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 14,
-    borderRadius: 5,
-    alignItems: 'center',
     marginTop: 20,
     marginBottom: 30,
-  },
-  submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
 });

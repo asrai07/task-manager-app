@@ -74,9 +74,9 @@ Tasks
 - GET `/tasks?user_id={id}` — returns `{ data: [ ...tasks ] }`
 - POST `/tasks` — body: `{ "user_id":..., "title":"...", "description":"...", "status":"..." }`
 - PUT `/tasks/{id}` — body: `{ "title":"...", "description":"...", "status":"..." }`
-- DELETE `/tasks/{id}` — delete
+- DELETE `/tasks/{id}` — delete task
 
-Headers: include `Authorization: Bearer {token}` (frontend currently reads token and sets header in sagas)
+Headers: include `Authorization: {token}` (tokens expire after 7 days)
 
 cURL examples
 ```bash
@@ -84,7 +84,7 @@ cURL examples
 curl -X POST -H "Content-Type: application/json" -d '{"email":"john@example.com","password":"pass"}' http://10.0.2.2/task_manager/index.php/login
 
 # Fetch tasks
-curl "http://10.0.2.2/task_manager/index.php/tasks?user_id=1" -H "Authorization: Bearer TOKEN"
+curl "http://10.0.2.2/task_manager/index.php/tasks?user_id=1" -H "Authorization: TOKEN"
 ```
 
 ---
@@ -113,6 +113,18 @@ CREATE TABLE tasks (
   status ENUM('pending','in_progress','Completed') DEFAULT 'pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+```
+
+Tokens
+```sql
+CREATE TABLE tokens (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  token VARCHAR(64) UNIQUE NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 ```

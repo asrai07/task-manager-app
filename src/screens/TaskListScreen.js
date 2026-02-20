@@ -3,14 +3,15 @@ import {
   View,
   Text,
   FlatList,
-  ActivityIndicator,
   RefreshControl,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTasksRequest } from "../redux/actions/taskActions";
+import { fetchTasksRequest, deleteTaskRequest } from "../redux/actions/taskActions";
 import { logoutRequest } from "../redux/actions/authActions";
+import TaskCard from '../components/TaskCard';
+import Loader from '../components/Loader';
 
 
 const TaskListScreen = ({ navigation }) => {
@@ -33,8 +34,12 @@ const TaskListScreen = ({ navigation }) => {
   };
 
   const handleLogout = () => {
-  dispatch(logoutRequest());
-};
+    dispatch(logoutRequest());
+  };
+
+  const handleDelete = (taskId) => {
+    dispatch(deleteTaskRequest(taskId, user.id));
+  };
 
 const Header = () => (
   <View style={styles.header}>
@@ -48,29 +53,16 @@ const Header = () => (
 
 
 const renderItem = ({ item }) => (
-  <View style={styles.card}>
-    <Text style={styles.title}>{item.title}</Text>
-    <Text style={styles.description}>{item.description}</Text>
-    <Text style={[styles.status, item.status === 'Completed' ? styles.statusCompleted : styles.statusPending]}>Status: {item.status}</Text>
-
-    <TouchableOpacity
-      style={styles.editButton}
-      onPress={() =>
-        navigation.navigate("AddEditTask", { task: item })
-      }
-    >
-      <Text style={styles.editButtonText}>Edit</Text>
-    </TouchableOpacity>
-  </View>
+  <TaskCard
+    task={item}
+    onEdit={() => navigation.navigate("AddEditTask", { task: item })}
+    onDelete={() => handleDelete(item.id)}
+  />
 );
 
 
   if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return <Loader />;
   }
 
   if (error) {
@@ -166,43 +158,6 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: 10,
-  },
-  card: {
-    backgroundColor: '#fff',
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 8,
-    elevation: 2,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  description: {
-    marginBottom: 8,
-    color: '#555',
-  },
-  status: {
-    marginBottom: 10,
-    fontStyle: 'italic',
-  },
-  statusCompleted: {
-    color: 'green',
-  },
-  statusPending: {
-    color: 'orange',
-  },
-  editButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 5,
-    alignSelf: 'flex-start',
-  },
-  editButtonText: {
-    color: '#fff',
-    fontSize: 14,
   },
   center: {
     flex: 1,
