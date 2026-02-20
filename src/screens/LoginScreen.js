@@ -41,6 +41,17 @@ const handleLogin = () => {
     return;
   }
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    Alert.alert("Validation", "Invalid email format");
+    return;
+  }
+
+  if (password.length < 4) {
+    Alert.alert("Validation", "Password must be at least 4 characters");
+    return;
+  }
+
   dispatch(loginRequest(email, password));
 };
 

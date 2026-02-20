@@ -68,8 +68,16 @@ if ($endpoint === "register" && $request_method === "POST") {
         sendResponse(false, ["error" => "All fields required"], 400);
     }
 
+    if (strlen($name) > 100) {
+        sendResponse(false, ["error" => "Name must be less than 100 characters"], 400);
+    }
+
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         sendResponse(false, ["error" => "Invalid email format"], 400);
+    }
+
+    if (strlen($password) < 4) {
+        sendResponse(false, ["error" => "Password must be at least 4 characters"], 400);
     }
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -94,6 +102,10 @@ if ($endpoint === "login" && $request_method === "POST") {
 
     if (empty($email) || empty($password)) {
         sendResponse(false, ["error" => "Email and password required"], 400);
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        sendResponse(false, ["error" => "Invalid email format"], 400);
     }
 
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
@@ -165,10 +177,23 @@ if ($endpoint === "tasks") {
         $user_id = $data['user_id'] ?? null;
         $title = trim($data['title'] ?? '');
         $description = trim($data['description'] ?? '');
-        $status = "pending";
+        $status = trim($data['status'] ?? 'pending');
 
         if (!$user_id || empty($title)) {
             sendResponse(false, ["error" => "Missing required fields"], 400);
+        }
+
+        if (strlen($title) > 200) {
+            sendResponse(false, ["error" => "Title must be less than 200 characters"], 400);
+        }
+
+        if (strlen($description) > 1000) {
+            sendResponse(false, ["error" => "Description must be less than 1000 characters"], 400);
+        }
+
+        $validStatuses = ['pending', 'in_progress', 'Completed'];
+        if (!in_array($status, $validStatuses)) {
+            sendResponse(false, ["error" => "Invalid status"], 400);
         }
 
         $stmt = $conn->prepare("INSERT INTO tasks (user_id, title, description, status, created_at) VALUES (?, ?, ?, ?, NOW())");
@@ -185,6 +210,23 @@ if ($endpoint === "tasks") {
     $title = trim($data['title'] ?? '');
     $description = trim($data['description'] ?? '');
     $status = trim($data['status'] ?? '');
+
+    if (empty($title)) {
+        sendResponse(false, ["error" => "Title required"], 400);
+    }
+
+    if (strlen($title) > 200) {
+        sendResponse(false, ["error" => "Title must be less than 200 characters"], 400);
+    }
+
+    if (strlen($description) > 1000) {
+        sendResponse(false, ["error" => "Description must be less than 1000 characters"], 400);
+    }
+
+    $validStatuses = ['pending', 'in_progress', 'Completed'];
+    if (!in_array($status, $validStatuses)) {
+        sendResponse(false, ["error" => "Invalid status"], 400);
+    }
 
     $stmt = $conn->prepare("
         UPDATE tasks 

@@ -31,6 +31,22 @@ const SignupScreen = ({ navigation }) => {
       return;
     }
 
+    if (name.length > 100) {
+      Alert.alert("Validation", "Name must be less than 100 characters");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert("Validation", "Invalid email format");
+      return;
+    }
+
+    if (password.length < 4) {
+      Alert.alert("Validation", "Password must be at least 4 characters");
+      return;
+    }
+
     dispatch(registerRequest({ name, email, password }));
     Alert.alert("Success", "Account created. Please login.");
     navigation.goBack();

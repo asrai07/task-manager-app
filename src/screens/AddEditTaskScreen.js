@@ -32,6 +32,22 @@ const AddEditTaskScreen = ({ route, navigation }) => {
       return;
     }
 
+    if (title.length > 200) {
+      Alert.alert("Validation", "Title must be less than 200 characters");
+      return;
+    }
+
+    if (description.length > 1000) {
+      Alert.alert("Validation", "Description must be less than 1000 characters");
+      return;
+    }
+
+    const validStatuses = ['pending', 'in_progress', 'Completed'];
+    if (!validStatuses.includes(status)) {
+      Alert.alert("Validation", "Invalid status");
+      return;
+    }
+
     const data = {
       user_id: user.id,
       title,
