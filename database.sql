@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS tasks (
   user_id INT NOT NULL,
   title VARCHAR(200) NOT NULL,
   description LONGTEXT,
-  status ENUM('pending', 'in_progress', 'Completed') DEFAULT 'pending',
+  status ENUM('pending', 'in_progress', 'completed') DEFAULT 'pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

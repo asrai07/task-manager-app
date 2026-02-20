@@ -14,6 +14,7 @@ import {
 const initialState = {
   tasks: [],
   loading: false,
+  refreshing: false,
   error: null,
 };
 
@@ -34,13 +35,18 @@ case UPDATE_TASK_FAILURE:
 
 
     case FETCH_TASKS_REQUEST:
-      return { ...state, loading: true, error: null };
+      return { 
+        ...state, 
+        loading: state.tasks.length === 0, 
+        refreshing: state.tasks.length > 0,
+        error: null 
+      };
 
     case FETCH_TASKS_SUCCESS:
-      return { ...state, loading: false, tasks: action.payload };
+      return { ...state, loading: false, refreshing: false, tasks: action.payload };
 
     case FETCH_TASKS_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, loading: false, refreshing: false, error: action.payload };
 
     default:
       return state;

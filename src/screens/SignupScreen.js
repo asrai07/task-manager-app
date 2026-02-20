@@ -9,7 +9,7 @@ import {
   Text,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { registerRequest } from "../redux/actions/authActions";
+import { registerRequest, clearAuthError } from "../redux/actions/authActions";
 
 const SignupScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -22,6 +22,7 @@ const SignupScreen = ({ navigation }) => {
   useEffect(() => {
     if (error) {
       Alert.alert("Error", error);
+      dispatch(clearAuthError());
     }
   }, [error]);
 

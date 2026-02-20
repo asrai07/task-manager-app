@@ -86,7 +86,7 @@ const AddEditTaskScreen = ({ route, navigation }) => {
 
       <Text style={styles.label}>Status</Text>
       <View style={styles.statusContainer}>
-        {['pending', 'in_progress', 'Completed'].map((s) => (
+        {['pending', 'in_progress', 'completed'].map((s) => (
           <TouchableOpacity
             key={s}
             style={[

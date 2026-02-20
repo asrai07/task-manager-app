@@ -1,6 +1,7 @@
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAILURE = "LOGIN_FAILURE";
+export const CLEAR_AUTH_ERROR = "CLEAR_AUTH_ERROR";
 
 export const RESTORE_SESSION_REQUEST = "RESTORE_SESSION_REQUEST";
 export const RESTORE_SESSION_SUCCESS = "RESTORE_SESSION_SUCCESS";
@@ -32,4 +33,8 @@ export const restoreSessionRequest = () => ({
 export const loginRequest = (email, password) => ({
   type: LOGIN_REQUEST,
   payload: { email, password },
+});
+
+export const clearAuthError = () => ({
+  type: CLEAR_AUTH_ERROR,
 });

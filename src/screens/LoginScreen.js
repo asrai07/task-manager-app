@@ -7,7 +7,7 @@ import {
   Alert
 } from 'react-native';
 import { useDispatch, useSelector } from "react-redux";
-import { loginRequest } from "../redux/actions/authActions";
+import { loginRequest, clearAuthError } from "../redux/actions/authActions";
 import Input from '../components/Input';
 import Button from '../components/Button';
 
@@ -32,6 +32,7 @@ useEffect(() => {
 useEffect(() => {
   if (error) {
     Alert.alert("Login Error", error);
+    dispatch(clearAuthError());
   }
 }, [error]);
 

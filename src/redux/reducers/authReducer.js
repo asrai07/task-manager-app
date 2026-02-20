@@ -2,6 +2,7 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
+  CLEAR_AUTH_ERROR,
   RESTORE_SESSION_REQUEST,
   RESTORE_SESSION_SUCCESS,
   RESTORE_SESSION_FAILURE,
@@ -68,6 +69,9 @@ case REGISTER_FAILURE:
     user: null,
     error: null,
   };
+
+  case CLEAR_AUTH_ERROR:
+    return { ...state, error: null };
 
 
     default:

@@ -191,7 +191,7 @@ if ($endpoint === "tasks") {
             sendResponse(false, ["error" => "Description must be less than 1000 characters"], 400);
         }
 
-        $validStatuses = ['pending', 'in_progress', 'Completed'];
+        $validStatuses = ['pending', 'in_progress', 'completed'];
         if (!in_array($status, $validStatuses)) {
             sendResponse(false, ["error" => "Invalid status"], 400);
         }
@@ -223,7 +223,7 @@ if ($endpoint === "tasks") {
         sendResponse(false, ["error" => "Description must be less than 1000 characters"], 400);
     }
 
-    $validStatuses = ['pending', 'in_progress', 'Completed'];
+    $validStatuses = ['pending', 'in_progress', 'completed'];
     if (!in_array($status, $validStatuses)) {
         sendResponse(false, ["error" => "Invalid status"], 400);
     }

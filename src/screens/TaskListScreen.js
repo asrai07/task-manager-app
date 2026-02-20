@@ -6,18 +6,19 @@ import {
   RefreshControl,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTasksRequest, deleteTaskRequest } from "../redux/actions/taskActions";
 import { logoutRequest } from "../redux/actions/authActions";
-import TaskCard from '../components/TaskCard';
+import TaskCard from "../components/Taskcard";
 import Loader from '../components/Loader';
 
 
 const TaskListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const { tasks, loading, error } = useSelector(
+  const { tasks, loading, refreshing, error } = useSelector(
     (state) => state.tasks
   );
 
@@ -28,6 +29,15 @@ const TaskListScreen = ({ navigation }) => {
       dispatch(fetchTasksRequest(user.id));
     }
   }, [user]);
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert("Error", error, [
+        { text: "Retry", onPress: () => dispatch(fetchTasksRequest(user.id)) },
+        { text: "OK" },
+      ]);
+    }
+  }, [error]);
 
   const onRefresh = () => {
     dispatch(fetchTasksRequest(user.id));
@@ -65,15 +75,6 @@ const renderItem = ({ item }) => (
     return <Loader />;
   }
 
-  if (error) {
-    return (
-      <View style={styles.center}>
-        <Text>{error}</Text>
-      </View>
-    );
-  }
-
-
   return (
     <View style={styles.container}>
       <Header />
@@ -91,9 +92,14 @@ const renderItem = ({ item }) => (
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
         refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         contentContainerStyle={styles.listContent}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No tasks yet. Add one to get started!</Text>
+          </View>
+        }
       />
     </View>
   );
@@ -159,9 +165,14 @@ const styles = StyleSheet.create({
   listContent: {
     padding: 10,
   },
-  center: {
+  emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: 50,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#888',
   },
 });

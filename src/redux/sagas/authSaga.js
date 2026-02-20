@@ -21,7 +21,14 @@ LOGOUT_SUCCESS,
 function* loginSaga(action) {
   try {
     const response = yield call(loginAPI, action.payload);
+
+    console.log("LOGIN DATA:", response.data);
+
     const { token, user } = response.data;
+
+    if (!token) {
+      throw new Error("No token received from server");
+    }
 
     yield call(AsyncStorage.setItem, "token", token);
     yield call(AsyncStorage.setItem, "user", JSON.stringify(user));
@@ -30,10 +37,14 @@ function* loginSaga(action) {
       type: LOGIN_SUCCESS,
       payload: { token, user },
     });
+
   } catch (error) {
     yield put({
       type: LOGIN_FAILURE,
-      payload: error.response?.data?.error || "Login failed. Try again.",
+      payload:
+        error.response?.data?.error ||
+        error.message ||
+        "Login failed. Try again.",
     });
   }
 }
@@ -83,7 +94,7 @@ function* registerSaga(action) {
     yield call(AsyncStorage.removeItem, "user");
     yield put({ type: LOGOUT_SUCCESS });
   } catch (error) {
-    console.log("Logout error:", error);
+     yield put({ type: LOGOUT_SUCCESS });
   }
 }
 

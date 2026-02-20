@@ -110,7 +110,7 @@ CREATE TABLE tasks (
   user_id INT NOT NULL,
   title VARCHAR(200) NOT NULL,
   description TEXT,
-  status ENUM('pending','in_progress','Completed') DEFAULT 'pending',
+  status ENUM('pending','in_progress','completed') DEFAULT 'pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -136,6 +136,69 @@ CREATE TABLE tokens (
 ## Postman collection
 
 A simple Postman collection is included at `backend/postman_collection.json` with requests for register, login, fetch tasks, create task, update task, delete task.
+
+---
+
+## Running Tests
+
+**Frontend Tests:**
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+```
+
+**Backend Tests:**
+```bash
+# Install PHPUnit (if not installed)
+composer require --dev phpunit/phpunit
+
+# Run tests
+cd backend/task_manager
+vendor/bin/phpunit
+```
+
+---
+
+## What Would I Improve With More Time
+
+**Security & Authentication:**
+- Implement JWT tokens instead of custom tokens for better security and standardization
+- Add refresh token mechanism for seamless session management
+- Implement rate limiting on API endpoints to prevent abuse
+- Add HTTPS/SSL support for production deployment
+
+**Code Quality & Architecture:**
+- Add comprehensive unit and integration tests (Jest, React Native Testing Library)
+- Implement error boundaries in React Native for better error handling
+- Add TypeScript for type safety across the entire codebase
+- Implement proper logging system for debugging and monitoring
+
+**Features & UX:**
+- Add task filtering and sorting (by status, date, priority)
+- Implement task search functionality
+- Add task due dates and reminders
+- Implement offline support with local caching (Redux Persist)
+- Add pagination for large task lists
+- Implement real-time updates using WebSockets
+
+**Performance:**
+- Optimize database queries with proper indexing
+- Implement caching strategy (Redis) for frequently accessed data
+- Add image optimization and lazy loading if images are added
+- Implement code splitting and lazy loading for React Native
+
+**DevOps & Deployment:**
+- Set up CI/CD pipeline for automated testing and deployment
+- Add Docker containerization for consistent environments
+- Implement proper environment configuration management
+- Add API documentation using Swagger/OpenAPI
+- Set up monitoring and analytics (Sentry, Firebase Analytics)
 
 ---
 
