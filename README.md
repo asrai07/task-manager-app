@@ -1,7 +1,5 @@
 # Task Manager App
 
-Repository: <ADD_YOUR_GITHUB_REPO_URL_HERE>
-
 This repository contains a React Native frontend (in `src/`) and a simple PHP backend API (can be served from XAMPP or copied into the project `backend/` directory).
 
 ---
@@ -69,9 +67,8 @@ Base: (depends on how you serve backend)
 - Built-in server: `http://10.0.2.2:8080/task_manager/index.php` or `http://10.0.2.2:8080/index.php`
 
 Authentication
-- POST `/auth/register` — body: `{ "name": "...", "email": "...", "password": "..." }`
-- POST `/auth/login` — body: `{ "email": "...", "password": "..." }` => returns `{ token, user }`
-- POST `/auth/logout` — no body (stub)
+- POST `/register` — body: `{ "name": "...", "email": "...", "password": "..." }`
+- POST `/login` — body: `{ "email": "...", "password": "..." }` => returns `{ token, user }`
 
 Tasks
 - GET `/tasks?user_id={id}` — returns `{ data: [ ...tasks ] }`
@@ -84,7 +81,7 @@ Headers: include `Authorization: Bearer {token}` (frontend currently reads token
 cURL examples
 ```bash
 # Login
-curl -X POST -H "Content-Type: application/json" -d '{"email":"john@example.com","password":"pass"}' http://10.0.2.2/task_manager/index.php/auth/login
+curl -X POST -H "Content-Type: application/json" -d '{"email":"john@example.com","password":"pass"}' http://10.0.2.2/task_manager/index.php/login
 
 # Fetch tasks
 curl "http://10.0.2.2/task_manager/index.php/tasks?user_id=1" -H "Authorization: Bearer TOKEN"
